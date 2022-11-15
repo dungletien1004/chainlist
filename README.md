@@ -32,3 +32,14 @@ This box has been based from [pet-shop-box](https://github.com/truffle-box/pet-s
     // Serves the front-end on http://localhost:3000
     npm run dev
     ```
+## Run
+    ```javascript
+    truffle migrate --network ganache
+    truffle console --network ganache
+    ChainList.address //display address
+    accounts = await web3.eth.getAccounts() // gan account list vao accounts variable
+    amountAccount_1 = await web3.eth.getBalance(accounts[1])
+    web3.utils.fromWei(amountAccount_1, "ether")
+    ChainList.deployed().then(function(instance){app=instance;})
+    app.sellArticle("iphone7", "selling in order to buy iPhone8", web3.utils.toWei(web3.utils.toBN(3),"ether"), {from: accounts[1]})
+    ```
