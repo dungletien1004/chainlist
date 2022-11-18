@@ -43,6 +43,7 @@ This box has been based from [pet-shop-box](https://github.com/truffle-box/pet-s
     ChainList.deployed().then(function(instance){app=instance;})
     app.sellArticle("iphone7", "selling in order to buy iPhone8", web3.utils.toWei(web3.utils.toBN(3),"ether"), {from: accounts[1]})
     ```
-```
+```javascript
     truffle migrate --compile-all --reset --network ganache
+    var sellEvent = app.getPastEvents("LogSellArticle", {fromBlock: 0, toBlock: 'latest'}).then(result => console.log('logEvent',result))
 ```

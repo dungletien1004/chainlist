@@ -4,23 +4,19 @@ App = {
     account: 0x0,
 
     init() {
-        // //load article
-        // var articleRow = $('#articlesRow');
         return App.initWeb3();
     },
 
     async initWeb3() {
         //initialize web3
-        console.log(window.ethereum);
         if (typeof web3 != 'undefined') {
+            console.log('metamas')
             await window.ethereum.enable();
             App.web3Provider = web3.currentProvider;
         } else {
             App.web3Provider = new Web3.providers.HttpProvider('http://127.0.0.1:7545');
         }
-
         web3 = new Web3(App.web3Provider);
-        console.log(web3);
         App.displayAccountInfo()
 
         return App.initContract();
@@ -29,7 +25,6 @@ App = {
     displayAccountInfo: function() {
         web3.eth.getCoinbase(function(err, account) {
             if (err === null) {
-                console.log(account);
                 App.account = account;
                 $('#account').text(account);
                 web3.eth.getBalance(account, function(err, balance) {
@@ -46,6 +41,9 @@ App = {
         // get the contract artifact file and use it to instantiate a truffle contract abstraction
         App.contracts.ChainList =  TruffleContract(chainListArtifact);
         App.contracts.ChainList.setProvider(App.web3Provider);
+        //listen to event
+        App.listenToEvent();
+        console.log('21');
         return App.reloadArticles();
        });
     },
@@ -53,12 +51,12 @@ App = {
     reloadArticles: function() {
         // refresh account info  because the balance might have changed
         App.displayAccountInfo();
-
-        $('#articleRow').empty();
+        console.log('12');
+        $('#articlesRow').empty();
         App.contracts.ChainList.deployed().then(function(instance) {
             return instance.getArticle();
         }).then(function(article) {
-            if (article[0] === 0x0) {
+            if (article[0] == 0x0) {
                 return;
             }
             var articlesRow = $('#articlesRow');
@@ -88,7 +86,6 @@ App = {
         var _description = $('#article_description').val();
         var _price = String(web3.utils.toWei(web3.utils.toBN($('#article_price').val() || 0), "ether"));
 
-        console.log(_article_name, _description, _price);
         if (_article_name.trim() == '' || _price == 0) {
             return false;
         }
@@ -99,10 +96,22 @@ App = {
                 gas: 500000
             });
         }).then(function(result) {
-            App.reloadArticles();
         }).catch(function(err) {
             console.error(err);
         });
+    },
+    //this function listen to events trigger by the contract
+    listenToEvent: function() {
+        App.contracts.ChainList.deployed().then(function(instance) {
+            instance.getPastEvents("LogSellArticle", {fromBlock: 0, toBlock: 'latest'})
+            .then(events => {
+                events.length > 0 && events.map(event => {
+                    $('#events').append('<li class="list-group-item" >' + event.args[1].toString() + ' is now for sale </li>');
+                })
+            })
+            .catch(err => console.log ('error', err.message, err.stack));
+            console.log('listen');
+        })
     },
 };
 
