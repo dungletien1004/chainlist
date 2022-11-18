@@ -11,13 +11,16 @@ App = {
 
     async initWeb3() {
         //initialize web3
+        console.log(window.ethereum);
         if (typeof web3 != 'undefined') {
-            console.log(web3);
+            await window.ethereum.enable();
             App.web3Provider = web3.currentProvider;
         } else {
             App.web3Provider = new Web3.providers.HttpProvider('http://127.0.0.1:7545');
         }
+
         web3 = new Web3(App.web3Provider);
+        console.log(web3);
         App.displayAccountInfo()
 
         return App.initContract();
@@ -26,6 +29,7 @@ App = {
     displayAccountInfo: function() {
         web3.eth.getCoinbase(function(err, account) {
             if (err === null) {
+                console.log(account);
                 App.account = account;
                 $('#account').text(account);
                 web3.eth.getBalance(account, function(err, balance) {
