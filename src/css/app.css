@@ -1,6 +1,6 @@
 body {
     padding-top: 40px;
-    padding-bottom: 120px;
+    /* padding-bottom: 120px; */
 }
 
 .footer {
@@ -15,4 +15,7 @@ body {
     font-size: 18px;
     display: inline;
     padding: 5px;
+}
+#articlesRow {
+    margin-bottom: 120px;
 }
