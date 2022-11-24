@@ -46,4 +46,9 @@ This box has been based from [pet-shop-box](https://github.com/truffle-box/pet-s
 ```javascript
     truffle migrate --compile-all --reset --network ganache
     var sellEvent = app.getPastEvents("LogSellArticle", {fromBlock: 0, toBlock: 'latest'}).then(result => console.log('logEvent',result))
+    var buyEvent = app.getPastEvents("LogBuyArticle", {_seller: accounts[1]}).then(result => console.log('logBuyEvent', result))
+    app.buyArticle({from: accounts[2], value: web3.utils.toWei(web3.utils.toBN(3),"ether")})
+    app.getArticlesForSale()
+    app.getNumberOfArticles()
+    app.articles(2)
 ```
